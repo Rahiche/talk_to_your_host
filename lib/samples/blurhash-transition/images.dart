@@ -37,93 +37,76 @@ class _ImagePageViewState extends State<ImagePageView> {
       //
     ];
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          const Text("FFI: "),
-          Switch(
-            value: showBlurHashFFI,
-            onChanged: (v) {
-              showBlurHashFFI = v;
-              setState(() {});
-            },
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("FFI: "),
+              SizedBox(
+                width: 100,
+                child: FittedBox(
+                  child: Switch(
+                    value: showBlurHashFFI,
+                    onChanged: (v) {
+                      showBlurHashFFI = v;
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircularProgressIndicator(),
+              ),
+              const Text(" Blur: "),
+              SizedBox(
+                width: 100,
+                child: FittedBox(
+                  child: Switch(
+                    value: showBlurHash,
+                    onChanged: (v) {
+                      showBlurHash = v;
+                      setState(() {});
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
-          const CircularProgressIndicator(),
-          const Text(" Blur: "),
-          Switch(
-            value: showBlurHash,
-            onChanged: (v) {
-              showBlurHash = v;
-              setState(() {});
-            },
-          )
+          Expanded(
+            child: GridView.builder(
+              itemCount: imageUrls.length,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, index) {
+                if (showBlurHash) {
+                  if (showBlurHashFFI) {
+                    return Image.memory(
+                      decodeBlurhash(blurhash: imageBlurhash[index]),
+                      fit: BoxFit.cover,
+                    );
+                  }
+                  return BlurHash(
+                    hash: imageBlurhash[index],
+                    decodingHeight: 100,
+                    decodingWidth: 100,
+                    imageFit: BoxFit.cover,
+                    color: Colors.transparent,
+                  );
+                }
+                return Image.network(
+                  imageUrls[index],
+                  fit: BoxFit.cover,
+                );
+              },
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+              ),
+            ),
+          ),
         ],
-      ),
-      body: GridView.builder(
-        // controller: PageController(viewportFraction: 0.8, initialPage: 2),
-        itemCount: imageUrls.length,
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          if (showBlurHash) {
-            if (showBlurHashFFI) {
-              return Image.memory(
-                decodeBlurhash(blurhash: imageBlurhash[index]),
-                fit: BoxFit.cover,
-              );
-            }
-            return BlurHash(
-              hash: imageBlurhash[index],
-              decodingHeight: 100,
-              decodingWidth: 100,
-              imageFit: BoxFit.cover,
-              color: Colors.transparent,
-            );
-          }
-          return Image.network(
-            imageUrls[index],
-            fit: BoxFit.cover,
-          );
-
-          // return Image.memory(
-          //   decodeBlurhash(blurhash: imageBlurhash[index]),
-          //   fit: BoxFit.cover,
-          // );
-          // return FutureBuilder(
-          //   future: BlurHashDecoder.decodeBlurHash(
-          //       imageBlurhash[index], 100, 100),
-          //   builder: (BuildContext context,
-          //       AsyncSnapshot<Uint8List?> snapshot) {
-          //     if (!snapshot.hasData) {
-          //       return Container(
-          //         color: Colors.red,
-          //       );
-          //     }
-          //     return Image.memory(
-          //       snapshot.data!,
-          //       fit: BoxFit.cover,
-          //     );
-          //   },
-          // );
-
-          ///
-          ///
-          // return FutureBuilder(
-          //   future: ffiDecode(imageBlurhash[index]),
-          //   builder:
-          //       (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
-          //     if (!snapshot.hasData) {
-          //       return Container(
-          //         color: Colors.red,
-          //       );
-          //     }
-          //     return Image.memory(
-          //       snapshot.data!,
-          //       fit: BoxFit.cover,
-          //     );
-          //   },
-          // );
-        },
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
       ),
     );
   }
