@@ -28,7 +28,8 @@ lib/
 
 ## Implementation Notes
 ### Gaussian Blur
-The Gaussian blur implemented in Dart uses a different algorithm compared to the Rust implementation. While the Dart version can be optimized, it was intentionally kept as-is to showcase existing methods without any modifications or optimizations. This decision was made to demonstrate the use of readily available tools and libraries.
+🔴 The Gaussian blur implemented in Dart uses a different algorithm compared to the Rust implementation. While the Dart version can be optimized, it was intentionally kept as-is to showcase existing methods without any modifications or optimizations. This decision was made to demonstrate the use of readily available tools and libraries.
+
 
 ### Blurhash Example
-Similarly, the Blurhash example leverages existing methods and libraries without any forking or optimization. The goal was to present the functionality as it is available in the current ecosystem.
+🟠 Similarly, the Blurhash example leverages existing methods and libraries without any forking or optimization. The goal was to present the functionality as it is available in the current ecosystem.
