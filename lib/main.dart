@@ -1,37 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:talk_to_your_host/samples/blurhash_demo.dart';
+import 'package:talk_to_your_host/samples/blurhash-transition/images.dart';
+import 'package:talk_to_your_host/samples/blurhash_benchmark/blurhash_demo.dart';
+import 'package:talk_to_your_host/samples/image_processing/gaussian_blur.dart';
+import 'package:talk_to_your_host/src/rust/frb_generated.dart';
 
-void main() {
-  runApp(GalleryApp());
+void main() async {
+  await RustLib.init();
+  runApp(const GalleryApp());
 }
 
 class GalleryApp extends StatelessWidget {
+  const GalleryApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Gallery App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData.dark(useMaterial3: true),
       home: GalleryHomePage(),
     );
   }
 }
 
 class GalleryHomePage extends StatelessWidget {
+  GalleryHomePage({super.key});
+
   final List<String> samples = [
-    'BlurhashDemo',
-    'Sample 2',
-    'Sample 3',
-    'Sample 4',
-    'Sample 5',
+    'Blurhash: transition example',
+    'Image Processing: blur',
+    'Blurhash Using different methods',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gallery App'),
+        title: const Text('Gallery App'),
       ),
       body: ListView.builder(
         itemCount: samples.length,
@@ -39,46 +43,31 @@ class GalleryHomePage extends StatelessWidget {
           return ListTile(
             title: Text(samples[index]),
             onTap: () {
-              if (samples[index] == "BlurhashDemo") {
+              if (samples[index] == 'Blurhash Using different methods') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BlurhashDemo(),
+                    builder: (context) => const BlurhashDemo(),
                   ),
                 );
-              } else {
+              } else if (samples[index] == 'Image Processing: blur') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        SamplePage(sampleName: samples[index]),
+                    builder: (context) => const BlurEffectDemo(),
+                  ),
+                );
+              } else if (samples[index] == 'Blurhash: transition example') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ImagePageView(),
                   ),
                 );
               }
             },
           );
         },
-      ),
-    );
-  }
-}
-
-class SamplePage extends StatelessWidget {
-  final String sampleName;
-
-  SamplePage({required this.sampleName});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(sampleName),
-      ),
-      body: Center(
-        child: Text(
-          sampleName,
-          style: TextStyle(fontSize: 24),
-        ),
       ),
     );
   }

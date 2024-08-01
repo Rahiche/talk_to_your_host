@@ -2,20 +2,32 @@ PODS:
   - blurhash_ffi (0.0.1):
     - Flutter
   - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - rust_lib_talk_to_your_host (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - blurhash_ffi (from `.symlinks/plugins/blurhash_ffi/ios`)
   - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - rust_lib_talk_to_your_host (from `.symlinks/plugins/rust_lib_talk_to_your_host/ios`)
 
 EXTERNAL SOURCES:
   blurhash_ffi:
     :path: ".symlinks/plugins/blurhash_ffi/ios"
   Flutter:
     :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  rust_lib_talk_to_your_host:
+    :path: ".symlinks/plugins/rust_lib_talk_to_your_host/ios"
 
 SPEC CHECKSUMS:
   blurhash_ffi: 4831b96320d4273876c9a2fd3f7d50b8a3a53509
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4
+  rust_lib_talk_to_your_host: 7336c457f76c7632bacf156a9a027677ac293c3c
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 

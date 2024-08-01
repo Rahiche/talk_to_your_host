@@ -38,6 +38,10 @@ dependencies:
   flutter_blurhash: 0.8.2
   blurhash_ffi: 1.2.6
   fl_chart: 0.68.0
+  image: ^4.2.0
+  rust_lib_talk_to_your_host:
+    path: rust_builder
+  flutter_rust_bridge: 2.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -48,6 +52,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
+  integration_test:
+    sdk: flutter
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -61,8 +67,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

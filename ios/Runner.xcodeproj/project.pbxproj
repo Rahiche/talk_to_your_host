@@ -16,6 +16,8 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		E14E7C69859FA19B17274668 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E6F24600CCC7D6E79BD6EAD /* Pods_Runner.framework */; };
+		F30BC2482C557F4E00E8E752 /* libblur.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F30BC2462C557F4E00E8E752 /* libblur.a */; };
+		F3F875A82C58FCF700F75FF4 /* blurhashdecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F875A72C58FCF700F75FF4 /* blurhashdecode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +67,9 @@
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9CB9D832DDF09E32390A844F /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		E734487984D3C5B2E17195EE /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
+		F30BC2462C557F4E00E8E752 /* libblur.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libblur.a; path = Runner/libblur.a; sourceTree = "<group>"; };
+		F30BC2472C557F4E00E8E752 /* libblur.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libblur.h; path = Runner/libblur.h; sourceTree = "<group>"; };
+		F3F875A72C58FCF700F75FF4 /* blurhashdecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = blurhashdecode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F30BC2482C557F4E00E8E752 /* libblur.a in Frameworks */,
 				E14E7C69859FA19B17274668 /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,6 +137,8 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				F30BC2462C557F4E00E8E752 /* libblur.a */,
+				F30BC2472C557F4E00E8E752 /* libblur.h */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -160,6 +168,7 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
+				F3F875A72C58FCF700F75FF4 /* blurhashdecode.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -376,6 +385,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3F875A82C58FCF700F75FF4 /* blurhashdecode.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
@@ -478,6 +488,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Runner",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.talktoyourhostapp.talkToYourHost;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -664,6 +678,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Runner",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.talktoyourhostapp.talkToYourHost;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -688,6 +706,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Runner",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.talktoyourhostapp.talkToYourHost;
 				PRODUCT_NAME = "$(TARGET_NAME)";

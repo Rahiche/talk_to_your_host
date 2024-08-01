@@ -1,0 +1,17 @@
+[package]
+name = "rust_lib_talk_to_your_host"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+anyhow = "1.0.86"
+base64 = "0.22.1"
+blurhash = "0.2.3"
+crossbeam = "0.8.4"
+flutter_rust_bridge = "=2.1.0"
+image = "0.25.2"
+libblur = "0.13.1"
+num = "0.4.3"
