@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:talk_to_your_host/src/rust/api/simple.dart';
+import 'package:talk_to_your_host/src/rust/frb_generated.dart';
 
 // Entry point for the isolate
 void _blurImageEntryPoint(SendPort sendPort) async {
@@ -25,17 +26,35 @@ void _blurImageEntryPoint(SendPort sendPort) async {
   }
 }
 
+void _rustBlurImageEntryPoint(SendPort sendPort) async {
+  final port = ReceivePort();
+  sendPort.send(port.sendPort);
+
+  await for (final data in port) {
+    if (data is _BlurImageData) {
+      await RustLib.init();
+      final blurredImage = applyGaussianBlur(
+        imageData: data.bytes,
+        sigma: data.sigma,
+      );
+
+      // Send the result back to the main isolate
+      data.resultPort.send(blurredImage);
+    }
+  }
+}
+
 // Data class to hold the input data for the isolate
 class _BlurImageData {
   final Uint8List bytes;
-  final double sigma;
+  final int sigma;
   final SendPort resultPort;
 
   _BlurImageData(this.bytes, this.sigma, this.resultPort);
 }
 
 class BlurEffectDemo extends StatefulWidget {
-  const BlurEffectDemo({Key? key}) : super(key: key);
+  const BlurEffectDemo({super.key});
 
   @override
   State<BlurEffectDemo> createState() => _BlurEffectDemoState();
@@ -51,13 +70,19 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
 
   final String imagePath = 'assets/image_2.jpg';
 
-  double sigma = 150;
+  int sigma = 1;
+  bool useIsolate = false;
   Future<void> _benchmarkMethods() async {
     final imageBytes = await _loadImageBytes(imagePath);
 
     durationMethod1 = Duration.zero;
     final stopwatch1 = Stopwatch()..start();
-    imageMethod1 = await _applyGaussianBlurMethod1(imageBytes, sigma);
+    if (useIsolate) {
+      imageMethod1 =
+          await _applyGaussianBlurMethod1WithIsolate(imageBytes, sigma);
+    } else {
+      imageMethod1 = await _applyGaussianBlurMethod1(imageBytes);
+    }
 
     stopwatch1.stop();
     durationMethod1 = stopwatch1.elapsed;
@@ -65,8 +90,11 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
 
     durationMethod2 = Duration.zero;
     final stopwatch2 = Stopwatch()..start();
-    imageMethod2 = await _applyGaussianBlurMethod2(imageBytes);
-
+    if (useIsolate) {
+      imageMethod2 = await _applyGaussianBlurMethod2WithIsolate(imageBytes);
+    } else {
+      imageMethod2 = await _applyGaussianBlurMethod2(imageBytes);
+    }
     stopwatch2.stop();
     durationMethod2 = stopwatch2.elapsed;
 
@@ -92,8 +120,12 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
     setState(() {});
   }
 
-  Future<Image> _applyGaussianBlurMethod1(Uint8List bytes, double sigma) async {
+  bool isLoading = false;
+
+  Future<Image> _applyGaussianBlurMethod1WithIsolate(
+      Uint8List bytes, int sigma) async {
     final port = ReceivePort();
+    setState(() => isLoading = true);
     final isolate = await Isolate.spawn(_blurImageEntryPoint, port.sendPort);
 
     final completer = Completer<Uint8List>();
@@ -108,18 +140,45 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
     });
 
     final blurredImageBytes = await completer.future;
+    setState(() => isLoading = false);
+
     return Image.memory(
       blurredImageBytes,
       gaplessPlayback: true,
     );
   }
 
-  //
-  // Future<Image> _applyGaussianBlurMethod1(Uint8List bytes) async {
-  //   final image = img.decodeImage(bytes)!;
-  //   final blurredImage = img.gaussianBlur(image, radius: sigma.toInt());
-  //   return Image.memory(img.encodePng(blurredImage));
-  // }
+  Future<Image> _applyGaussianBlurMethod1(Uint8List bytes) async {
+    final image = img.decodeImage(bytes)!;
+    final blurredImage = img.gaussianBlur(image, radius: sigma.toInt());
+    return Image.memory(img.encodePng(blurredImage));
+  }
+
+  Future<Image> _applyGaussianBlurMethod2WithIsolate(Uint8List bytes) async {
+    final port = ReceivePort();
+    setState(() => isLoading = true);
+    final isolate =
+        await Isolate.spawn(_rustBlurImageEntryPoint, port.sendPort);
+
+    final completer = Completer<Uint8List>();
+    port.listen((message) {
+      if (message is SendPort) {
+        message.send(_BlurImageData(bytes, sigma, port.sendPort));
+      } else if (message is Uint8List) {
+        completer.complete(message);
+        port.close();
+        isolate.kill();
+      }
+    });
+
+    final blurredImageBytes = await completer.future;
+    setState(() => isLoading = false);
+
+    return Image.memory(
+      blurredImageBytes,
+      gaplessPlayback: true,
+    );
+  }
 
   Future<Image> _applyGaussianBlurMethod2(Uint8List bytes) async {
     final result = applyGaussianBlur(
@@ -131,8 +190,6 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
       result,
       gaplessPlayback: true,
     );
-    // Uint8List decoded = base64Decode(result);
-    // return Image.memory(decoded);
   }
 
   Future<Uint8List> _loadImageBytes(String path) async {
@@ -156,16 +213,23 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
         actions: [
           Row(
             children: [
-              Text("Sigma: ${sigma}"),
+              const Text("Use Isolate:"),
+              Switch(
+                value: useIsolate,
+                onChanged: (value) {
+                  setState(() => useIsolate = value);
+                },
+              ),
+              Text("Sigma: $sigma"),
               Slider(
-                value: sigma,
+                value: sigma.toDouble(),
                 min: 0,
                 max: 150,
                 divisions: 150,
                 label: sigma.round().toString(),
                 onChanged: (value) {
                   setState(() {
-                    sigma = value;
+                    sigma = value.toInt();
                   });
                 },
               ),
@@ -174,7 +238,9 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
           FloatingActionButton(
             heroTag: "start",
             onPressed: _benchmarkMethods,
-            child: const Icon(Icons.start),
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : const Icon(Icons.start),
           ),
           const SizedBox(height: 10),
           FloatingActionButton(
@@ -206,7 +272,7 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
                         ),
                       ),
                       Text("Duration: ${durationMethod2?.inMilliseconds} ms"),
-                      if (imageMethod1 != null) Expanded(child: imageMethod1!),
+                      if (imageMethod2 != null) Expanded(child: imageMethod2!),
                     ],
                   ),
                 ),

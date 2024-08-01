@@ -10,6 +10,6 @@ Uint8List decodeBlurhash({required String blurhash}) =>
     RustLib.instance.api.crateApiSimpleDecodeBlurhash(blurhash: blurhash);
 
 Uint8List applyGaussianBlur(
-        {required List<int> imageData, required double sigma}) =>
+        {required List<int> imageData, required int sigma}) =>
     RustLib.instance.api
         .crateApiSimpleApplyGaussianBlur(imageData: imageData, sigma: sigma);

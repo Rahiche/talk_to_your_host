@@ -42,7 +42,7 @@ pub fn init_app() {
 }
 
 #[flutter_rust_bridge::frb(sync)]
-pub fn apply_gaussian_blur(image_data: Vec<u8>, sigma: f32) -> Vec<u8> {
+pub fn apply_gaussian_blur(image_data: Vec<u8>, sigma: u32) -> Vec<u8> {
     // Load the image from memory
     let img = load_from_memory(&image_data).expect("Failed to load image");
 
@@ -53,6 +53,7 @@ pub fn apply_gaussian_blur(image_data: Vec<u8>, sigma: f32) -> Vec<u8> {
     // Get the raw bytes and stride of the image
     let bytes = img_rgb.as_mut();
     let stride = width as u32 * 3;
+    let sigma_u32 = sigma as u32;
 
     // Apply the Gaussian blur
     libblur::fast_gaussian(
@@ -60,7 +61,7 @@ pub fn apply_gaussian_blur(image_data: Vec<u8>, sigma: f32) -> Vec<u8> {
         stride,
         width,
         height,
-        7,
+        sigma_u32,
         FastBlurChannels::Channels3,
         ThreadingPolicy::Single,
         EdgeMode::Clamp,
