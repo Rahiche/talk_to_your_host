@@ -335,7 +335,8 @@ class _BlurEffectDemoState extends State<BlurEffectDemo> {
 }
 
 class DrawImageWidget extends StatelessWidget {
-  DrawImageWidget({
+  const DrawImageWidget({
+    super.key,
     required this.image,
     required this.size,
   });

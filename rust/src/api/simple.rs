@@ -56,6 +56,7 @@ pub fn apply_gaussian_blur(image_data: Vec<u8>, sigma: u32) -> Vec<u8> {
     let sigma_u32 = sigma as u32;
 
     // Apply the Gaussian blur
+    // TODO: use normal gaussian for fair benchmark
     libblur::fast_gaussian(
         bytes,
         stride,
